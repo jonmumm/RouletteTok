@@ -1,0 +1,20 @@
+body {
+	padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+#streams {
+	height: 210px;
+}
+
+#streams div {
+	float: left;
+}
+
+#controls {
+	clear: left;
+}
+
+a {
+  color: #00B7FF;
+}
