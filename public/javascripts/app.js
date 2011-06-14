@@ -1,6 +1,6 @@
-//(function() {
+(function() {
 	
-	var socket = new io.Socket("192.168.10.145", {port: 3000, rememberTransport: false}); 
+	var socket = new io.Socket(config.serverLoc, {port: config.serverPort, rememberTransport: false}); 
 
 	socket.on('connect', function() {
 		console.log('send initial');
@@ -169,4 +169,4 @@
 		
 	}();
 			
-//})();
+})();
