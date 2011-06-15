@@ -1,6 +1,6 @@
 (function() {
 	
-	var socket = new io.Socket(config.serverLoc, {port: config.serverPort, rememberTransport: false}); 
+	var socket = new io.Socket(config.address, {port: config.port, rememberTransport: false}); 
 
 	socket.on('connect', function() {
 		console.log('send initial');

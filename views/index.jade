@@ -1,2 +1,17 @@
-h1= title
-p Welcome to #{title}
+h1 #{title}
+
+div#streams
+  div#publisherContainer
+  div#subscriberContainer
+  
+div#controls
+  div#notificationContainer
+  button#nextButton Next
+
+script(src='./socket.io/socket.io.js')
+script(src='http://staging.tokbox.com/v0.91/js/TB.min.js')
+script
+  var config = {};
+  config.address = '#{address}';
+  config.port = '#{port}';   
+script(src='./javascripts/app.js')
