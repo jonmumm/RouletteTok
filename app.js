@@ -5,7 +5,6 @@ var app = module.exports = express.createServer();
 
 // Configuration
 app.configure(function() {
-	app.set('address', 'fierce-sword-182.herokuapp.com'); // Server address
 	app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -15,13 +14,17 @@ app.configure(function() {
   app.use(express.static(__dirname + '/public'));
 });
 
-// Development configuration
 app.configure('development', function() {
 	app.set('address', 'localhost');
   app.use(express.errorHandler({ 
 		dumpExceptions: true, 
 		showStack: true 
 	})); 
+});
+
+app.configure('production', function() {
+	app.set('address', 'fierce-sword-182.herokuapp.com');
+	app.use(express.errorHandler());
 });
 
 // Routes
