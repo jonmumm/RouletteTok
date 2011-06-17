@@ -1,18 +1,25 @@
+// Require and initialize OpenTok SDK
 var opentok = require('opentok');
 var ot = new opentok.OpenTokSDK('413302', 'fc512f1f3c13e3ec3f590386c986842f92efa7e7');
 
+// An array of users that do not have a chat partner
 var soloUsers = [];
 
+// Sets up the socket server
 exports.start = function(socket) {
 	socket.on('connection', function(client) {	
 
 		client.on('message', function(message) {
-			// console.log(message);
 			
+			// Parse the incoming event
 			switch (message.event) {
+				
+				// User requested initialization data
 				case 'initial':
+					// Create an OpenTok session for each user
 					ot.createSession('localhost', {}, function(session) {
 						
+						// Each user should be a moderator
 						var data = {
 							sessionId: session.sessionId,
 							token: ot.generateToken({ 
@@ -21,6 +28,7 @@ exports.start = function(socket) {
 							})
 						};
 						
+						// Send initialization data back to the client
 						client.send({
 							event: 'initial',
 							data: data
@@ -28,9 +36,10 @@ exports.start = function(socket) {
 					});
 				break;
 				
+				// User requested next partner
 				case 'next':
-					console.log(soloUsers);
 				
+					// Create a "user" data object for me
 					var me = {
 						sessionId: message.data.sessionId,
 						clientId: client.sessionId
@@ -47,10 +56,12 @@ exports.start = function(socket) {
 							// Get the socket client for this user
 							partnerClient = socket.clientsIndex[tmpUser.clientId];
 							
+							// Remove the partner we found from the list of solo users
 							soloUsers.splice(i, 1);
 							
-							// If this user is still connected
+							// If the user we found exists...
 							if (partnerClient) {
+								// Set as our partner and quit the loop today
 								partner = tmpUser;
 								break;
 							}
@@ -87,6 +98,10 @@ exports.start = function(socket) {
 						// Mark that my new partner and me are partners
 						client.partner = partner;
 						partnerClient.partner = me;
+						
+						// Mark that we are not in the list of solo users anymore
+						client.inList = false;
+						partnerClient.inList = false;
 												
 					} else {
 						
@@ -97,6 +112,7 @@ exports.start = function(socket) {
 						
 						// Add myself to list of solo users if I'm not in the list
 						if (!client.inList) {
+							client.inList = true;
 							soloUsers.push(me);
 						}
 												
@@ -108,10 +124,6 @@ exports.start = function(socket) {
 							
 				break;
 			}
-		});
-		
-		client.on('disconnect', function() {
-			
 		});
 	});
 };
