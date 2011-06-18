@@ -3,9 +3,7 @@ var io = require('socket.io');
 
 var app = module.exports = express.createServer();
 
-console.log('NODE_ENV=' + process.env.NODE_ENV);
-
-var port = process.env.PORT || 3000);
+var port = process.env.PORT || 3000;
 
 // Configuration
 app.configure(function() {
