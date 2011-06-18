@@ -3,6 +3,8 @@ var io = require('socket.io');
 
 var app = module.exports = express.createServer();
 
+console.log('NODE_ENV= ' + process.env.NODE_ENV);
+
 // Configuration
 app.configure(function() {
 	app.set('port', process.env.PORT || 3000);
@@ -38,7 +40,7 @@ app.get('/', function(req, res) {
 
 if (!module.parent) {
   app.listen(app.settings.port);
-  console.log("Express server listening on port %d", app.settings.port);
+  console.log("Server listening on port %d", app.settings.port);
 }
 
 // Start my Socket.io app and pass in the socket
