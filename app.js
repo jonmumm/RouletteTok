@@ -5,6 +5,8 @@ var app = module.exports = express.createServer();
 
 console.log('NODE_ENV=' + process.env.NODE_ENV);
 
+var port = process.env.PORT || 3000);
+
 // Configuration
 app.configure(function() {
   app.set('views', __dirname + '/views');
@@ -16,7 +18,7 @@ app.configure(function() {
 });
 
 app.configure('development', function() {
-	app.set('port', process.env.PORT || 3000);
+	app.set('port', port);
 	app.set('address', 'localhost');
   app.use(express.errorHandler({ 
 		dumpExceptions: true, 
@@ -27,7 +29,6 @@ app.configure('development', function() {
 app.configure('production', function() {
 	app.set('port', 80);
 	app.set('address', 'fierce-sword-182.herokuapp.com');
-	app.set
 	app.use(express.errorHandler());
 });
 
@@ -41,8 +42,8 @@ app.get('/', function(req, res) {
 });
 
 if (!module.parent) {
-  app.listen(app.settings.port);
-  console.log("Server listening on port %d", app.settings.port);
+  app.listen(port);
+  console.log("Server listening on port %d", port);
 }
 
 // Start my Socket.io app and pass in the socket
