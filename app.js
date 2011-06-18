@@ -3,11 +3,10 @@ var io = require('socket.io');
 
 var app = module.exports = express.createServer();
 
-console.log('NODE_ENV= ' + process.env.NODE_ENV);
+console.log('NODE_ENV=' + process.env.NODE_ENV);
 
 // Configuration
 app.configure(function() {
-	app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
@@ -17,6 +16,7 @@ app.configure(function() {
 });
 
 app.configure('development', function() {
+	app.set('port', process.env.PORT || 3000);
 	app.set('address', 'localhost');
   app.use(express.errorHandler({ 
 		dumpExceptions: true, 
@@ -25,7 +25,9 @@ app.configure('development', function() {
 });
 
 app.configure('production', function() {
+	app.set('port', 80);
 	app.set('address', 'fierce-sword-182.herokuapp.com');
+	app.set
 	app.use(express.errorHandler());
 });
 
