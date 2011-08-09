@@ -1,3 +1,6 @@
+// SET YOUR PRODUCTION SERVER HOST ADDRESS HERE
+var HOST_ADDRESS = 'fierce-sword-182.herokuapp.com';
+
 var express = require('express');
 var io = require('socket.io');
 
@@ -26,7 +29,7 @@ app.configure('development', function() {
 
 app.configure('production', function() {
 	app.set('port', 80);
-	app.set('address', 'fierce-sword-182.herokuapp.com');
+	app.set('address', HOST_ADDRESS);
 	app.use(express.errorHandler());
 });
 

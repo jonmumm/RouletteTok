@@ -3,13 +3,10 @@
 	var socket = new io.Socket(config.address, {port: config.port, rememberTransport: false}); 
 
 	socket.on('connect', function() {
-		console.log('send initial');
 		socket.send({ event: 'initial' });
 	});
 
-	socket.on('message', function (message) {
-		console.log(message);
-		
+	socket.on('message', function (message) {		
 		var sessionId;
 		var token;
 		
