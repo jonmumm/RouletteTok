@@ -5,7 +5,10 @@ var express = require('express');
 
 var app = module.exports = express.createServer();
 
-var port = process.env.PORT || 3000;
+var port = 3000;
+if (process.env.NODE_ENV === "production") {
+  port = 80;
+}
 
 // Configuration
 app.configure(function() {
@@ -18,8 +21,6 @@ app.configure(function() {
 });
 
 app.configure('development', function() {
-	app.set('port', port);
-	app.set('address', 'localhost');
   app.use(express.errorHandler({ 
 		dumpExceptions: true, 
 		showStack: true 
@@ -27,17 +28,13 @@ app.configure('development', function() {
 });
 
 app.configure('production', function() {
-	app.set('port', 80);
-	app.set('address', HOST_ADDRESS);
 	app.use(express.errorHandler());
 });
 
 // Routes
 app.get('/', function(req, res) {
   res.render('index', {
-		title: 'RouletteTok',
-    address: app.settings.address,
-		port: app.settings.port
+		title: 'RouletteTok'
   });
 });
 
