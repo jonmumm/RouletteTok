@@ -1,10 +1,10 @@
 {
 	"name": "RouletteTok",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"dependencies": {
-		"express": "2.3.11",
-		"jade": ">= 0.0.1",
-		"opentok": ">= 0.1.0",
-		"socket.io": "0.6.18"
+		"express": "*",
+		"jade": "*",
+		"opentok": "*",
+		"socket.io": "*"
 	}
 }

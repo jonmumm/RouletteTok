@@ -2,7 +2,6 @@
 var HOST_ADDRESS = 'fierce-sword-182.herokuapp.com';
 
 var express = require('express');
-var io = require('socket.io');
 
 var app = module.exports = express.createServer();
 
@@ -48,4 +47,5 @@ if (!module.parent) {
 }
 
 // Start my Socket.io app and pass in the socket
-require('./socketapp').start(io.listen(app));
+var io = require('socket.io').listen(app);
+require('./socketapp').start(io.sockets);
