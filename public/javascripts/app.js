@@ -72,12 +72,8 @@
       function streamCreatedHandler(event) {
         var stream = event.streams[0];
         if (mySession.connection.connectionId == stream.connection.connectionId) {
-          RouletteApp.next();
+          SocketProxy.findPartner(mySession.sessionId);
         }
-      };
-
-      function accessAllowedHandler(event) {		
-        SocketProxy.findPartner(mySession.sessionId);
       };
 
       function connectionCreatedHandler(event) {
