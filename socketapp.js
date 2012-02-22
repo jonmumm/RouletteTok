@@ -4,12 +4,13 @@ var ot = new opentok.OpenTokSDK('413302', 'fc512f1f3c13e3ec3f590386c986842f92efa
 
 // An array of users that do not have a chat partner
 var soloUsers = [];
+var clients = {}
 
 // Sets up the socket server
-exports.start = function(socket) {
-  socket.on('connection', function(client) {	
+exports.start = function(sockets) {
+  sockets.on('connection', function(socket) {	
+    clients[socket.id] = socket;
 
-    // Create an OpenTok session for each user
     ot.createSession('localhost', {}, function(session) {
 
       // Each user should be a moderator
@@ -22,32 +23,33 @@ exports.start = function(socket) {
       };
 
       // Send initialization data back to the client
-      client.emit('initial', data);
+      socket.emit('initial', data);
     });
 
-    client.on('next', function (data) {
+    socket.on('next', function (data) {
       // Create a "user" data object for me
       var me = {
         sessionId: data.sessionId,
-        clientId: client.sessionId
+        socketId: socket.id
       };
 
       var partner;
-      var partnerClient;
+      var partnerSocket;
       // Look for a user to partner with in the list of solo users
       for (var i = 0; i < soloUsers.length; i++) {
         var tmpUser = soloUsers[i];
+        console.log(tmpUser);
 
         // Make sure our last partner is not our new partner
-        if (client.partner != tmpUser) {							
+        if (socket.partner != tmpUser) {							
           // Get the socket client for this user
-          partnerClient = socket.clientsIndex[tmpUser.clientId];
+          partnerSocket = clients[tmpUser.socketId];
 
           // Remove the partner we found from the list of solo users
           soloUsers.splice(i, 1);
 
           // If the user we found exists...
-          if (partnerClient) {
+          if (partnerSocket) {
             // Set as our partner and quit the loop today
             partner = tmpUser;
             break;
@@ -59,7 +61,7 @@ exports.start = function(socket) {
       if (partner) {
 
         // Tell myself to subscribe to my partner
-        client.emit('subscribe', {
+        socket.emit('subscribe', {
           sessionId: partner.sessionId,
           token: ot.generateToken({ 
             sessionId: partner.sessionId,
@@ -68,7 +70,7 @@ exports.start = function(socket) {
         });
 
         // Tell my partner to subscribe to me
-        partnerClient.emit('subscribe', {
+        partnerSocket.emit('subscribe', {
           sessionId: me.sessionId,
           token: ot.generateToken({ 
             sessionId: me.sessionId,
@@ -77,29 +79,33 @@ exports.start = function(socket) {
         });
 
         // Mark that my new partner and me are partners
-        client.partner = partner;
-        partnerClient.partner = me;
+        socket.partner = partner;
+        partnerSocket.partner = me;
 
         // Mark that we are not in the list of solo users anymore
-        client.inlist = false;
-        partnerclient.inlist = false;
+        socket.inlist = false;
+        partnerSocket.inlist = false;
 
       } else {
 
         // delete that i had a partner if i had one				
-        if (client.partner) {							
-          delete client.partner;
+        if (socket.partner) {							
+          delete socket.partner;
         }
 
         // add myself to list of solo users if i'm not in the list
-        if (!client.inlist) {
-          client.inlist = true;
+        if (!socket.inlist) {
+          socket.inlist = true;
           soloUsers.push(me);
         }
 
         // tell myself that there is nobody to chat with right now
-        client.emit('empty');
+        socket.emit('empty');
       }	
+    });
+
+    socket.on('disconnect', function() {
+      delete clients[socket.id];
     });
   });
 };
