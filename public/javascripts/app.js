@@ -19,10 +19,7 @@
   var SocketProxy = function() {
 
     var findPartner = function(mySessionId) {
-      socket.send(JSON.stringify({
-        event: "next",
-        args: { sessionId: mySessionId }
-      }));
+      socket.emit('next', { sessionId: mySessionId });
     };
 
     return {
