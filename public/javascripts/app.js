@@ -14,10 +14,15 @@
     RouletteApp.wait();
   });
 
+  window.Socket = socket;
+
   var SocketProxy = function() {
 
     var findPartner = function(mySessionId) {
-      socket.emit('next', { sessionId: mySessionId });
+      socket.send(JSON.stringify({
+        event: "next",
+        args: { sessionId: mySessionId }
+      }));
     };
 
     return {
@@ -66,7 +71,6 @@
         ele.publisherContainer.appendChild(div);
 
         var publisher = mySession.publish(div.id);
-        publisher.addEventListener('accessAllowed', accessAllowedHandler);
       };
 
       function streamCreatedHandler(event) {
