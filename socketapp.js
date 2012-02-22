@@ -27,6 +27,7 @@ exports.start = function(sockets) {
     });
 
     socket.on('message', function (msg) {
+      console.log(msg);
       msg = JSON.parse(msg);
       switch (msg.event) {
         case "next":
