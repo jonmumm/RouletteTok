@@ -14,8 +14,6 @@
     RouletteApp.wait();
   });
 
-  window.Socket = socket;
-
   var SocketProxy = function() {
 
     var findPartner = function(mySessionId) {
