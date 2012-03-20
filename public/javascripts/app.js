@@ -61,7 +61,7 @@
       mySession = TB.initSession(sessionId);			
       mySession.addEventListener('sessionConnected', sessionConnectedHandler);	
       mySession.addEventListener('streamCreated', streamCreatedHandler);
-      mySession.connect(apiKey, 'moderator_token');
+      mySession.connect(apiKey, token);
 
       function sessionConnectedHandler(event) {
         ele.notificationContainer.innerHTML = "Connected, press allow.";
