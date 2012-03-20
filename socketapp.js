@@ -1,3 +1,9 @@
+// socketapp.js
+// 
+// This file handles all logic for generating and
+// distributing OpenTok sessions through sockets:w
+//
+
 // Require and initialize OpenTok SDK
 var opentok = require('opentok');
 var ot = new opentok.OpenTokSDK('413302', 'fc512f1f3c13e3ec3f590386c986842f92efa7e7');
@@ -27,7 +33,6 @@ exports.start = function(sockets) {
     });
 
     socket.on('next', function (data) {
-      console.log('next');
       // Create a "user" data object for me
       var me = {
         sessionId: data.sessionId,
@@ -102,6 +107,18 @@ exports.start = function(sockets) {
         // tell myself that there is nobody to chat with right now
         socket.emit('empty');
       }	
+    });
+
+    socket.on('disconnectPartners', function() {
+      if (socket.partner && socket.partner.socketId) {
+        var partnerSocket = clients[socket.partner.socketId]
+
+        if (partnerSocket) {
+          partnerSocket.emit('disconnectPartner');
+        }
+
+        socket.emit('disconnectPartner');
+      }
     });
 
     socket.on('disconnect', function() {

@@ -1,6 +1,3 @@
-// SET YOUR PRODUCTION SERVER HOST ADDRESS HERE
-var HOST_ADDRESS = 'fierce-sword-182.herokuapp.com';
-
 var express = require('express');
 
 var app = module.exports = express.createServer();
@@ -45,4 +42,8 @@ if (!module.parent) {
 
 // Start my Socket.io app and pass in the socket
 var io = require('socket.io').listen(app);
+io.configure(function() {
+  io.set('close timeout', 60*60*24);
+});
+
 require('./socketapp').start(io.sockets);

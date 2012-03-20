@@ -10,6 +10,10 @@
     RouletteApp.subscribe(data.sessionId, data.token);
   });
 
+  socket.on('disconnectPartner', function(data) {
+    RouletteApp.disconnectPartner();
+  });
+
   socket.on('empty', function(data) {
     RouletteApp.wait();
   });
@@ -20,8 +24,13 @@
       socket.emit('next', { sessionId: mySessionId });
     };
 
+    var disconnectPartners = function() {
+      socket.emit('disconnectPartners');
+    };
+
     return {
-      findPartner: findPartner
+      findPartner: findPartner,
+      disconnectPartners: disconnectPartners
     };
   }();
 
@@ -31,8 +40,6 @@
 
     var mySession;
     var partnerSession;
-
-    var partnerConnection;
 
     // Get view elements
     var ele = {};
@@ -54,8 +61,6 @@
       mySession = TB.initSession(sessionId);			
       mySession.addEventListener('sessionConnected', sessionConnectedHandler);	
       mySession.addEventListener('streamCreated', streamCreatedHandler);
-      mySession.addEventListener('connectionCreated', connectionCreatedHandler);	
-      mySession.addEventListener('connectionDestroyed', connectionDestroyedHandler);	
       mySession.connect(apiKey, 'moderator_token');
 
       function sessionConnectedHandler(event) {
@@ -74,24 +79,18 @@
           SocketProxy.findPartner(mySession.sessionId);
         }
       };
-
-      function connectionCreatedHandler(event) {
-        partnerConnection = event.connections[0];
-      };
-
-      function connectionDestroyedHandler(event) {
-        partnerConnection = null;
-      }
     };
 
     var next = function() {			
-      if (partnerConnection) {
-        mySession.forceDisconnect(partnerConnection);				
+      if (partnerSession.connected) {
+        SocketProxy.disconnectPartners();
+      } else {
+        SocketProxy.findPartner();
       }
+    };
 
-      if (partnerSession) {
-        partnerSession.disconnect();
-      }			
+    var disconnectPartner = function() {
+      partnerSession.disconnect();
     };
 
     var subscribe = function(sessionId, token) {
@@ -135,6 +134,7 @@
       init: init,
       next: next,
       subscribe: subscribe,
+      disconnectPartner: disconnectPartner,
       wait: wait
     };
 
