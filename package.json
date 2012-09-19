@@ -4,7 +4,7 @@
 	"dependencies": {
 		"express": "*",
 		"jade": "*",
-		"opentok": "*",
+		"opentok": "0.2.2",
 		"socket.io": "*"
 	}
 }

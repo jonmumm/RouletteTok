@@ -6,7 +6,7 @@
 
 // Require and initialize OpenTok SDK
 var opentok = require('opentok');
-var ot = new opentok.OpenTokSDK('413302', 'fc512f1f3c13e3ec3f590386c986842f92efa7e7');
+var ot = new opentok.OpenTokSDK('8911642', 'b36521541e88f77d5dd6168c57426222f6dd8799', {API_URL: 'https://api.opentok.com/hl' });
 
 // An array of users that do not have a chat partner
 var soloUsers = [];
@@ -21,10 +21,10 @@ exports.start = function(sockets) {
 
       // Each user should be a moderator
       var data = {
-        sessionId: session.sessionId,
+        sessionId: session,
         token: ot.generateToken({ 
-          sessionId: session.sessionId,
-          role: opentok.Roles.MODERATOR
+          sessionId: session,
+          role: opentok.RoleConstants.MODERATOR
         })
       };
 
